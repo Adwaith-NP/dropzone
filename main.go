@@ -1,7 +1,15 @@
 package main
 
-import "github.com/Adwaith-NP/dropzone/internal/udp"
+import (
+	"fmt"
+
+	"github.com/Adwaith-NP/dropzone/internal/udp"
+)
+
+const UDP_IP = 9090
+const DEFAULT_NAME = "DropZone"
 
 func main() {
-	udp.StartBroadcast("adwaith", 9090)
+	_, err := udp.StartListening(UDP_IP)
+	fmt.Println(err)
 }

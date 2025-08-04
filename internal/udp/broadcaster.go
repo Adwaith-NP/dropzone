@@ -43,6 +43,7 @@ func StartBroadcast(name string, port int) {
 		fmt.Println("Error to get localIP : ", err)
 		return
 	}
+	fmt.Println("Broadcast on UDP , port : ", port)
 	for {
 		message := fmt.Sprintf("%s|%s", strings.TrimSpace(name), localIP)
 		_, err := conn.Write([]byte(message))
