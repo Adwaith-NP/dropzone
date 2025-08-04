@@ -16,6 +16,7 @@ type receivers struct {
 
 var store receivers
 
+// Display all broadcast and ask user to select a receiver
 func StartListening(listenPort int) (string, error) {
 	count := 0
 	store = receivers{
@@ -32,23 +33,19 @@ func StartListening(listenPort int) (string, error) {
 	}
 	defer conn.Close()
 
-	fmt.Printf("\nListening for receivers on UDP port %d \nType x and hit enter to stop listening\n\n", listenPort)
+	fmt.Printf("\nListening for receivers on UDP port %d \nHit enter to stop listening\n\n", listenPort)
 	buf := make([]byte, 1024)
+	//Look for user input that use to stop scanning
 	go func() {
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
-			text := scanner.Text()
-			text = strings.ToLower(text)
-			if text == "x" {
-				stopChan <- struct{}{}
-				break
-			}
+			stopChan <- struct{}{}
+			break
 		}
 	}()
 
 loop:
 	for {
-		// A thread that scan user input
 		conn.SetReadDeadline(time.Now().Add(1 * time.Second))
 		n, remoteAddr, err := conn.ReadFromUDP(buf)
 		if err != nil {
@@ -80,7 +77,7 @@ loop:
 	}
 	if len(store.receiverMap) != 0 {
 		fmt.Println("Type x for exit")
-		fmt.Print("\nSelect a receiver : ")
+		fmt.Print("\nChoose receiver number : ")
 		scanner := bufio.NewScanner(os.Stdin)
 		for scanner.Scan() {
 			choice := scanner.Text()
@@ -95,6 +92,9 @@ loop:
 						return ip, nil
 					}
 				}
+			} else {
+				fmt.Println("invalid receiver selection")
+				fmt.Print("\nChoose receiver number : ")
 			}
 		}
 	}
