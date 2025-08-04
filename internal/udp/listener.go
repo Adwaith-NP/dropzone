@@ -11,7 +11,7 @@ import (
 )
 
 type receivers struct {
-	receiverMap map[string][]string
+	receiverMap map[string]string
 }
 
 var store receivers
@@ -19,7 +19,7 @@ var store receivers
 func StartListening(listenPort int) (string, error) {
 	count := 0
 	store = receivers{
-		receiverMap: make(map[string][]string),
+		receiverMap: make(map[string]string),
 	}
 	stopChan := make(chan struct{})
 	addr := net.UDPAddr{
@@ -41,9 +41,12 @@ func StartListening(listenPort int) (string, error) {
 			text = strings.ToLower(text)
 			if text == "x" {
 				stopChan <- struct{}{}
+				break
 			}
 		}
 	}()
+
+loop:
 	for {
 		// A thread that scan user input
 		conn.SetReadDeadline(time.Now().Add(1 * time.Second))
@@ -53,8 +56,7 @@ func StartListening(listenPort int) (string, error) {
 			if ok && netErr.Timeout() {
 				select {
 				case <-stopChan:
-					fmt.Println("Exiting main loop.")
-					break
+					break loop
 				default:
 					continue
 				}
@@ -68,19 +70,34 @@ func StartListening(listenPort int) (string, error) {
 		message := string(buf[:n])
 		parts := strings.Split(message, "|")
 		if len(parts) == 2 {
-			name := parts[0]
 			ip := parts[1]
 			if _, exist := store.receiverMap[ip]; !exist {
 				count++
 				fmt.Printf("%d -> Received from %s: %s\n", count, remoteAddr.String(), message)
-				store.receiverMap[ip] = []string{name, strconv.Itoa(count)}
+				store.receiverMap[ip] = strconv.Itoa(count)
 			}
 		}
 	}
-
-	// var input string
-	// fmt.Print("\nSelect a receiver : ")
-	// fmt.Scanln(&input)
+	if len(store.receiverMap) != 0 {
+		fmt.Println("Type x for exit")
+		fmt.Print("\nSelect a receiver : ")
+		scanner := bufio.NewScanner(os.Stdin)
+		for scanner.Scan() {
+			choice := scanner.Text()
+			choice = strings.ToLower(choice)
+			if choice == "x" {
+				return "", nil
+			}
+			num, err := strconv.Atoi(choice)
+			if err == nil && num > 0 && num <= len(store.receiverMap) {
+				for ip, index := range store.receiverMap {
+					if choice == index {
+						return ip, nil
+					}
+				}
+			}
+		}
+	}
 
 	return "", nil
 }
