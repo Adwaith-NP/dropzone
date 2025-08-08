@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+	"time"
 )
 
 func SendMetaData(ip string, port int, meta any) error {
@@ -22,6 +23,31 @@ func SendMetaData(ip string, port int, meta any) error {
 	for i := 0; i < 8; i++ {
 		lengthBytes[i] = byte(length >> (8 * i))
 	}
+
+	//Sending the len of json
 	_, err = conn.Write(lengthBytes)
-	return err
+	if err != nil {
+		return err
+	}
+
+	//sending the leg
+	_, err = conn.Write(jsonData)
+	if err != nil {
+		return err
+	}
+	//read the response by the receiver
+	conn.SetReadDeadline(time.Now().Add(2 * time.Second))
+	response := make([]byte, 8)
+	n, err := conn.Read(response)
+	if err != nil {
+		return err
+	}
+	res := string(response[:n])
+
+	if res == "accepted" {
+		fmt.Println("Starting")
+	} else {
+		return fmt.Errorf("receiver rejected your request")
+	}
+	return nil
 }

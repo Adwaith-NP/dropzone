@@ -5,13 +5,15 @@ import (
 	"fmt"
 	"io"
 	"net"
-	"strings"
+
+	"github.com/Adwaith-NP/dropzone/cmd"
 )
 
 func ReceiveMeta(post int) error {
-	var meta map[string]interface{}
+	var meta map[string]any
 	var choice string
 	port := fmt.Sprintf(":%d", post)
+
 	ln, err := net.Listen("tcp", port)
 	if err != nil {
 		return err
@@ -21,35 +23,34 @@ func ReceiveMeta(post int) error {
 		return err
 	}
 	defer conn.Close()
+
+	//Receive the leg of json
 	lengthBytes := make([]byte, 8)
-	_, err = io.ReadFull(conn, lengthBytes)
-	if err != nil {
+	if _, err := io.ReadFull(conn, lengthBytes); err != nil {
 		return err
 	}
+
 	var length int64
 	for i := 0; i < 8; i++ {
 		length |= int64(lengthBytes[i]) << (8 * i)
 	}
+
+	//Receive json by using the len
 	jsonBytes := make([]byte, length)
-	_, err = io.ReadFull(conn, jsonBytes)
-	if err != nil {
-		return err
-	}
-	err = json.Unmarshal(jsonBytes, &meta)
-	if err != nil {
+	if _, err := io.ReadFull(conn, jsonBytes); err != nil {
 		return err
 	}
 
-	//Print the details of meta data
-	fmt.Println("File transaction request (Accept or decline)")
-	if meta["Type"] == "directory" {
-		fmt.Printf("\nName : %s\nTotalSize : %d Byte\nFileCount : %d", meta["Name"], meta["TotalSize"], meta["FileCount"])
+	if err := json.Unmarshal(jsonBytes, &meta); err != nil {
+		return err
+	}
+
+	choice = cmd.RequestInquiry(meta)
+
+	if choice == "y" {
+		conn.Write([]byte("accepted"))
 	} else {
-		fmt.Printf("\nName : %s\nSize : %d Byte", meta["Name"], meta["Size"])
+		conn.Write([]byte("rejected"))
 	}
-	fmt.Printf("\n\n* Type n hit enter for reject\n* Type y and hit enter to accept\nInput : ")
-	fmt.Scan(&choice)
-	choice = strings.ToLower(choice)
-
 	return nil
 }
