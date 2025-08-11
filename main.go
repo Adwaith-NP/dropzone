@@ -5,7 +5,6 @@ import (
 
 	"github.com/Adwaith-NP/dropzone/internal/tcp"
 	"github.com/Adwaith-NP/dropzone/internal/udp"
-	"github.com/Adwaith-NP/dropzone/internal/utils"
 )
 
 const TCP_PORT = 8080
@@ -16,21 +15,23 @@ const URL = "/Users/adwaith/Documents/dropzone"
 func main() {
 	test := true
 	if test {
-		ip, err := udp.StartListening(UDP_PORT)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		meta, err := utils.BuildDirectoryMeta(URL)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		err = tcp.SendMetaData(ip, TCP_PORT, meta)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		fmt.Println("why")
+		// ip, err := udp.StartListening(UDP_PORT)
+		// if err != nil {
+		// 	fmt.Println(err)
+		// 	return
+		// }
+		// meta, err := utils.BuildDirectoryMeta(URL)
+		// if err != nil {
+		// 	fmt.Println(err)
+		// 	return
+		// }
+		// err = tcp.SendMetaData(ip, TCP_PORT, meta)
+		// if err != nil {
+		// 	fmt.Println(err)
+		// 	return
+		// }
+
 	} else {
 		go udp.StartBroadcast(DEFAULT_NAME, UDP_PORT)
 		err := tcp.ReceiveMeta(TCP_PORT)

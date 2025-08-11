@@ -5,6 +5,21 @@ import (
 	"strings"
 )
 
+func printDirTree(prefix string, tree map[string]any) {
+	for key := range tree {
+		value := tree[key]
+		switch v := value.(type) {
+		case map[string]any:
+			newLine := prefix + "|--" + key
+			nextPrefix := prefix + "   "
+			fmt.Println(newLine)
+			printDirTree(nextPrefix, v)
+		default:
+			fmt.Println(prefix + "|--" + key)
+		}
+	}
+}
+
 func RequestInquiry(meta map[string]any) string {
 	var choice string
 	fmt.Println("File transaction request (Accept or decline):")
@@ -18,22 +33,8 @@ func RequestInquiry(meta map[string]any) string {
 		fmt.Scan(&choice)
 		choice = strings.TrimSpace(strings.ToLower(choice))
 		if choice == "y" {
-			for key := range treeStructure {
-				value := treeStructure[key]
-				fmt.Println(value)
-				fmt.Printf("Type of a: %T\n\n", value)
-				// switch v := value.(type) {
-				// case string:
-				// 	fmt.Println(v, "str")
-				// case int64:
-				// 	fmt.Println(v, "int")
-				// case map[string]any:
-				// 	fmt.Println(v, "{map}")
-				// default:
-				// 	fmt.Println("error : ", v)
-				// }
-
-			}
+			fmt.Print("\n\n")
+			printDirTree("", treeStructure)
 		}
 
 	} else {
@@ -41,7 +42,7 @@ func RequestInquiry(meta map[string]any) string {
 		size, _ := meta["Size"].(float64)
 		fmt.Printf("\nName: %s\nSize: %.0f Bytes\n", name, size)
 	}
-	fmt.Printf("\n\n* Type n and hit enter for reject\n* Type y and hit enter to accept\nInput : ")
+	fmt.Printf("\n\n* Start download (y/enter) : ")
 	fmt.Scan(&choice)
 	choice = strings.TrimSpace(strings.ToLower(choice))
 	return choice
