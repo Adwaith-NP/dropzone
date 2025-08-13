@@ -54,11 +54,12 @@ func SendFile(ip string, port int, meta any, url string) error {
 	if res != "accepted" {
 		return fmt.Errorf("receiver rejected your request")
 	}
+	err = sendFiles(conn, url)
 	return nil
 }
 
 // it a two way that , as per file or directory the path was selected
-func SendFiles(conn net.Conn, url string) error {
+func sendFiles(conn net.Conn, url string) error {
 	if utils.IsDirectory(url) {
 		sendDirectory(conn, url)
 	} else if utils.PathExists(url) {
@@ -79,10 +80,11 @@ func sendDirectory(conn net.Conn, url string) error {
 		return err
 	}
 	for _, file := range allFilesUrl {
-		rel, err := filepath.Rel(url, file)
+		rel, err := filepath.Rel(filepath.Dir(url), file)
 		if err != nil {
 			return err
 		}
+		fmt.Println(url, file, rel)
 		if err := sendSingleFiles(conn, file, rel); err != nil {
 			fmt.Println("file problem : ", err)
 		}

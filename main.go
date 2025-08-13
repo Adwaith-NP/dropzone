@@ -5,36 +5,36 @@ import (
 
 	"github.com/Adwaith-NP/dropzone/internal/tcp"
 	"github.com/Adwaith-NP/dropzone/internal/udp"
+	"github.com/Adwaith-NP/dropzone/internal/utils"
 )
 
 const TCP_PORT = 8080
 const UDP_PORT = 9090
 const DEFAULT_NAME = "DropZone"
-const URL = "/Users/adwaith/Documents/dropzone"
+const URL = "/Users/adwaith/Documents/dropzone/cmd/receive.go"
 
 func main() {
-	test := true
+	test := false
 	if test {
-		fmt.Println("why")
-		// ip, err := udp.StartListening(UDP_PORT)
-		// if err != nil {
-		// 	fmt.Println(err)
-		// 	return
-		// }
-		// meta, err := utils.BuildDirectoryMeta(URL)
-		// if err != nil {
-		// 	fmt.Println(err)
-		// 	return
-		// }
-		// err = tcp.SendMetaData(ip, TCP_PORT, meta)
-		// if err != nil {
-		// 	fmt.Println(err)
-		// 	return
-		// }
+		ip, err := udp.StartListening(UDP_PORT)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		meta, err := utils.BuildFileMeta(URL)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		err = tcp.SendFile(ip, TCP_PORT, meta, URL)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
 
 	} else {
 		go udp.StartBroadcast(DEFAULT_NAME, UDP_PORT)
-		err := tcp.ReceiveMeta(TCP_PORT)
+		err := tcp.ReceiveFiles(TCP_PORT)
 		if err != nil {
 			fmt.Println("error ", err)
 			return
