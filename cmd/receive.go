@@ -47,3 +47,7 @@ func RequestInquiry(meta map[string]any) string {
 	choice = strings.TrimSpace(strings.ToLower(choice))
 	return choice
 }
+
+func ReceiverMode(port int, dropName string) {
+	fmt.Println("Running in receiver mode...")
+}
