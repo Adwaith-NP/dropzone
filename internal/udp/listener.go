@@ -91,7 +91,7 @@ loop:
 				return "", nil
 			}
 
-			num, err := strconv.Atoi(choice) // convert string to int
+			num, err := strconv.Atoi(choice) // convert string to int , to doing this we can use the value to comapre with index
 			if err == nil && num > 0 && num <= len(store.receiverMap) {
 				for ip, index := range store.receiverMap {
 					if num == index {

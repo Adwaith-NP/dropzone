@@ -1,7 +1,6 @@
 package tcp
 
 import (
-	"bufio"
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
@@ -9,55 +8,55 @@ import (
 	"net"
 	"os"
 	"path/filepath"
-	"runtime"
 	"strconv"
 	"strings"
-
-	"github.com/Adwaith-NP/dropzone/cmd"
 )
 
-// get the download directory according to the os
-func getDownloadDir() string {
-	home, err := os.UserHomeDir()
-	if err != nil {
-		panic(err)
-	}
-
-	switch runtime.GOOS {
-	case "windows":
-		return filepath.Join(home, "Downloads")
-
-	case "darwin":
-		return filepath.Join(home, "Downloads")
-
-	case "linux":
-		// Check XDG user dirs config
-		configFile := filepath.Join(home, ".config", "user-dirs.dirs")
-		if file, err := os.Open(configFile); err == nil {
-			defer file.Close()
-			scanner := bufio.NewScanner(file)
-			for scanner.Scan() {
-				line := scanner.Text()
-				if strings.HasPrefix(line, "XDG_DOWNLOAD_DIR") {
-					parts := strings.SplitN(line, "=", 2)
-					if len(parts) == 2 {
-						dir := strings.Trim(parts[1], `"`)
-						dir = strings.ReplaceAll(dir, "$HOME", home)
-						return dir
-					}
-				}
-			}
+func printDirTree(prefix string, tree map[string]any) {
+	for key := range tree {
+		value := tree[key]
+		switch v := value.(type) {
+		case map[string]any:
+			newLine := prefix + "|--" + key
+			nextPrefix := prefix + "   "
+			fmt.Println(newLine)
+			printDirTree(nextPrefix, v)
+		default:
+			fmt.Println(prefix + "|--" + key)
 		}
-		// Fallback
-		return filepath.Join(home, "Downloads")
 	}
+}
 
-	return filepath.Join(home, "Downloads")
+func requestInquiry(meta map[string]any) string {
+	var choice string
+	fmt.Println("File transaction request (Accept or decline):")
+	if meta["Type"] == "directory" {
+		name, _ := meta["Name"].(string)
+		totalSize, _ := meta["TotalSize"].(float64)
+		fileCount, _ := meta["FileCount"].(float64)
+		treeStructure, _ := meta["TreeStructure"].(map[string]any)
+		fmt.Printf("\nName: %s\nTotal Size: %.0f Bytes\nFile Count: %.0f\n", name, totalSize, fileCount)
+		fmt.Print("Do you want to display file tree structure (Y - yes/enter - skip) : ")
+		fmt.Scan(&choice)
+		choice = strings.TrimSpace(strings.ToLower(choice))
+		if choice == "y" {
+			fmt.Print("\n\n")
+			printDirTree("", treeStructure)
+		}
+
+	} else {
+		name, _ := meta["Name"].(string)
+		size, _ := meta["Size"].(float64)
+		fmt.Printf("\nName: %s\nSize: %.0f Bytes\n", name, size)
+	}
+	fmt.Printf("\n\n* Start download (y/enter) : ")
+	fmt.Scan(&choice)
+	choice = strings.TrimSpace(strings.ToLower(choice))
+	return choice
 }
 
 // heare is the logic to receive files
-func getAllFile(conn net.Conn) error {
-	baseDir := getDownloadDir()
+func downloadAllFile(conn net.Conn, baseDir string) error {
 	fmt.Println("Downloading ......")
 	for {
 		var metaLen int64
@@ -104,7 +103,7 @@ func getAllFile(conn net.Conn) error {
 }
 
 // verify the request from sender , if granded then the download start
-func ReceiveFiles(post int) error {
+func ReceiveFiles(post int, baseDir string) error {
 	var meta map[string]any
 	var choice string
 	port := fmt.Sprintf(":%d", post)
@@ -140,11 +139,11 @@ func ReceiveFiles(post int) error {
 		return err
 	}
 
-	choice = cmd.RequestInquiry(meta)
+	choice = requestInquiry(meta)
 
 	if choice == "y" {
 		conn.Write([]byte("accepted"))
-		err = getAllFile(conn)
+		err = downloadAllFile(conn, baseDir)
 		if err != nil {
 			return err
 		}

@@ -9,6 +9,7 @@ import (
 	"github.com/Adwaith-NP/dropzone/internal/utils"
 )
 
+// Send a UDP message ("name : ip") every 2 seconds
 func StartBroadcast(name string, port int) {
 	addr := fmt.Sprintf("255.255.255.255:%d", port)
 	udpAddr, err := net.ResolveUDPAddr("udp", addr)
@@ -28,7 +29,6 @@ func StartBroadcast(name string, port int) {
 		fmt.Println("Error to get localIP : ", err)
 		return
 	}
-	fmt.Println("Broadcast on port ", port)
 	for {
 		message := fmt.Sprintf("%s|%s", strings.TrimSpace(name), localIP)
 		_, err := conn.Write([]byte(message))

@@ -20,6 +20,14 @@ func main() {
 		fmt.Fprintln(os.Stderr, "Error : ", err)
 	}
 
+	//get download directory
+
+	downloadDir := utils.GetDownloadDir()
+	if !utils.IsDirectory(downloadDir) {
+		fmt.Fprintln(os.Stderr, "Error: Download directory not found. Please specify it manually using -dd <path>.")
+		os.Exit(1)
+	}
+
 	// collect all command line argum
 	senderMode := flag.Bool("s", false, "Run in sender mode")
 	receiverMode := flag.Bool("r", false, "Run in receiver mode")
@@ -32,7 +40,13 @@ func main() {
 	fileList := flag.String("fl", "", "Comma-separated list of file paths")
 	showHelp := flag.Bool("h", false, "Show help")
 	showVersion := flag.Bool("version", false, "Show version")
+	userDefinedDownloadDir := flag.String("dd", downloadDir, "Custom download directory")
 	flag.Parse()
+
+	if *userDefinedDownloadDir != downloadDir && !utils.IsDirectory(*userDefinedDownloadDir) {
+		fmt.Fprintln(os.Stderr, "Error: Directory not found : ", *userDefinedDownloadDir)
+		os.Exit(1)
+	}
 
 	//Validate the given use given ip is valid
 	if *ip != localIp && !utils.IsValidIPv4(*ip) {
@@ -71,7 +85,7 @@ func main() {
 			os.Exit(1)
 		}
 	} else if *receiverMode {
-		cmd.ReceiverMode(*port, *dropName)
+		cmd.ReceiverMode(*port, *dropName, *userDefinedDownloadDir, *ip)
 	} else {
 		fmt.Fprintln(os.Stderr, "Error: You must specify either -s (sender) or -r (receiver)")
 		os.Exit(1)

@@ -1,9 +1,11 @@
 package utils
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
 	"strings"
 )
 
@@ -125,4 +127,43 @@ func buildTreeRecursive(path string, tree map[string]any, totalSize *int64, file
 		}
 	}
 	return nil
+}
+
+// get the download directory according to the os
+func GetDownloadDir() string {
+	home, err := os.UserHomeDir()
+	if err != nil {
+		panic(err)
+	}
+
+	switch runtime.GOOS {
+	case "windows":
+		return filepath.Join(home, "Downloads")
+
+	case "darwin":
+		return filepath.Join(home, "Downloads")
+
+	case "linux":
+		// Check XDG user dirs config
+		configFile := filepath.Join(home, ".config", "user-dirs.dirs")
+		if file, err := os.Open(configFile); err == nil {
+			defer file.Close()
+			scanner := bufio.NewScanner(file)
+			for scanner.Scan() {
+				line := scanner.Text()
+				if strings.HasPrefix(line, "XDG_DOWNLOAD_DIR") {
+					parts := strings.SplitN(line, "=", 2)
+					if len(parts) == 2 {
+						dir := strings.Trim(parts[1], `"`)
+						dir = strings.ReplaceAll(dir, "$HOME", home)
+						return dir
+					}
+				}
+			}
+		}
+		// Fallback
+		return filepath.Join(home, "Downloads")
+	}
+
+	return filepath.Join(home, "Downloads")
 }
