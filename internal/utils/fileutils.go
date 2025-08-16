@@ -23,12 +23,6 @@ type FileMeta struct {
 	Size int64
 }
 
-// Return true if the file path exist
-func PathExists(path string) bool {
-	_, err := os.Stat(path)
-	return !os.IsNotExist(err)
-}
-
 // Return true if the path point a directory
 func IsDirectory(path string) bool {
 	info, err := os.Stat(path)
@@ -64,6 +58,17 @@ func GetAllFiles(dir string) ([]string, error) {
 		return nil, fmt.Errorf("no files found in directory")
 	}
 	return files, nil
+}
+
+func BuildFileListMeta(fileList map[string]any, totalSize int64) DirectoryMeta {
+	meta := DirectoryMeta{
+		Type:          "directory",
+		Name:          "DropZomeFiles",
+		TotalSize:     totalSize,
+		FileCount:     len(fileList),
+		TreeStructure: fileList,
+	}
+	return meta
 }
 
 func BuildFileMeta(path string) (FileMeta, error) {

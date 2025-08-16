@@ -2,10 +2,12 @@ package utils
 
 // types use in main.go and cmd/send.go to avoid typo
 const (
-	FileType      = "file"
-	DirectoryType = "directory"
-	FileListType  = "fileList"
-	AsciiArt      = `
+	StatusAccepted = "accepted"
+	StatusRejected = "rejected"
+	FileType       = "file"
+	DirectoryType  = "directory"
+	FileListType   = "fileList"
+	AsciiArt       = `
 ██████╗░██████╗░░█████╗░██████╗░███████╗░█████╗░███╗░░██╗███████╗
 ██╔══██╗██╔══██╗██╔══██╗██╔══██╗╚════██║██╔══██╗████╗░██║██╔════╝
 ██║░░██║██████╔╝██║░░██║██████╔╝░░███╔═╝██║░░██║██╔██╗██║█████╗░░
