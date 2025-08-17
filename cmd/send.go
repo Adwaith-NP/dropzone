@@ -43,11 +43,11 @@ func SenderMode(port int, path string, pathMode string, localIp string) {
 			os.Exit(1)
 		}
 		conn, err := tcp.RequestInquiry(receiverIp, port, fileMeta) //Send request to receiver if reject the exicution stop
-		defer conn.Close()
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "Error when connecting: ", err)
 			os.Exit(1)
 		}
+		defer conn.Close()
 		if err = tcp.SendSingleFiles(conn, path, filepath.Base(path)); err != nil { //filepath.Base(path) give the file name from the given url
 			fmt.Fprintln(os.Stderr, "Error when sending file: ", err)
 			os.Exit(1)
@@ -72,11 +72,11 @@ func SenderMode(port int, path string, pathMode string, localIp string) {
 			os.Exit(1)
 		}
 		conn, err := tcp.RequestInquiry(receiverIp, port, dirMeta) //Send request to receiver if reject the exicution stop
-		defer conn.Close()
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "Error when connecting: ", err)
 			os.Exit(1)
 		}
+		defer conn.Close()
 		if err = tcp.SendDirectory(conn, absPath); err != nil { //send directory
 			fmt.Fprintln(os.Stderr, "Error when sending file: ", err)
 			os.Exit(1)
@@ -114,11 +114,11 @@ func SenderMode(port int, path string, pathMode string, localIp string) {
 
 		meta := utils.BuildFileListMeta(fileNameSize, totalSize)
 		conn, err := tcp.RequestInquiry(receiverIp, port, meta) //Send request to receiver if reject the exicution stop
-		defer conn.Close()
 		if err != nil {
 			fmt.Fprintln(os.Stderr, "Error when connecting: ", err)
 			os.Exit(1)
 		}
+		defer conn.Close()
 		tcp.SendFileList(conn, files)
 
 	}

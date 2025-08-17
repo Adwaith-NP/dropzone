@@ -30,10 +30,14 @@ func StartBroadcast(name string, port int, localIP string, startStopSignel chan 
 			running = cmd
 		default:
 			if running {
-				message := fmt.Sprintf("%s|%s", strings.TrimSpace(name), localIP)
-				_, err := conn.Write([]byte(message))
-				if err != nil {
-					fmt.Fprintln(os.Stderr, "Error in sending broadcast", err)
+				deadline := time.Now().Add(3 * time.Second)
+				for time.Now().Before(deadline) {
+					message := fmt.Sprintf("%s|%s", strings.TrimSpace(name), localIP)
+					_, err := conn.Write([]byte(message))
+					if err != nil {
+						fmt.Fprintln(os.Stderr, "Error in sending broadcast", err)
+					}
+					time.Sleep(50 * time.Millisecond)
 				}
 				time.Sleep(2 * time.Second) // set a sleeping time 2 second to terminate too much udp signels
 			}

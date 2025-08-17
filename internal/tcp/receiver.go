@@ -1,6 +1,7 @@
 package tcp
 
 import (
+	"bufio"
 	"encoding/binary"
 	"encoding/json"
 	"fmt"
@@ -57,10 +58,11 @@ func requestInquiry(meta map[string]any) bool {
 		fmt.Printf("\nName: %s\nSize: %.0f Bytes\n", name, size)
 	}
 
-	fmt.Printf("\n\n* Start download (y/enter) : ")
-	fmt.Scan(&choice)
-	choice = strings.TrimSpace(strings.ToLower(choice))
-	return choice == "y"
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Print("\n\n* Start download (y/enter) : ")
+	input, _ := reader.ReadString('\n') // read until Enter
+	input = strings.TrimSpace(strings.ToLower(input))
+	return input == "y"
 }
 
 // heare is the logic to receive files
@@ -111,11 +113,10 @@ func downloadAllFile(conn net.Conn, baseDir string) error {
 }
 
 // verify the request from sender , if granded then the download start
-func ReceiveFiles(post int, baseDir string, startStopSignel chan bool) error {
+func ReceiveFiles(port int, baseDir string, startStopSignel chan bool) error {
 	var meta map[string]any // collect meta data
-	port := fmt.Sprintf(":%d", post)
-
-	ln, err := net.Listen("tcp", port)
+	lnAdrr := fmt.Sprintf("0.0.0.0:%d", port)
+	ln, err := net.Listen("tcp", lnAdrr)
 	if err != nil {
 		return err
 	}

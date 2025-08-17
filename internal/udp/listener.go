@@ -46,7 +46,7 @@ func StartListening(listenPort int) (string, error) {
 	// Its the loop that look up for UDP signels in every 2 second
 loop:
 	for {
-		conn.SetReadDeadline(time.Now().Add(2 * time.Second))
+		conn.SetReadDeadline(time.Now().Add(1 * time.Second))
 		n, remoteAddr, err := conn.ReadFromUDP(buf)
 		if err != nil {
 			netErr, ok := err.(net.Error)
