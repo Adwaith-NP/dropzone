@@ -43,7 +43,7 @@ func main() {
 	userDefinedDownloadDir := flag.String("dd", downloadDir, "Custom download directory")
 	flag.Parse()
 
-	if *userDefinedDownloadDir != downloadDir && !utils.IsDirectory(*userDefinedDownloadDir) {
+	if *receiverMode && *userDefinedDownloadDir != downloadDir && !utils.IsDirectory(*userDefinedDownloadDir) {
 		fmt.Fprintln(os.Stderr, "Error: Directory not found : ", *userDefinedDownloadDir)
 		os.Exit(1)
 	}
