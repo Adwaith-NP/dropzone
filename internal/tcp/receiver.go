@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/Adwaith-NP/dropzone/internal/utils"
 )
@@ -101,7 +102,13 @@ func downloadAllFile(conn net.Conn, baseDir string) error {
 			return err
 		}
 
-		if _, err := io.CopyN(f, conn, size); err != nil {
+		wd := &utils.DropData{
+			Writer:        f,
+			LastTime:      time.Now(),
+			TotalFileSize: size,
+		}
+
+		if _, err := io.CopyN(wd, conn, size); err != nil {
 			f.Close()
 			return err
 		}
@@ -109,6 +116,7 @@ func downloadAllFile(conn net.Conn, baseDir string) error {
 		f.Close()
 
 	}
+	fmt.Print("\n\nDownload complete")
 	return nil
 }
 

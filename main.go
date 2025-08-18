@@ -91,30 +91,4 @@ func main() {
 		os.Exit(1)
 	}
 
-	// test := false
-	// if test {
-	// 	ip, err := udp.StartListening(UDP_PORT)
-	// 	if err != nil {
-	// 		fmt.Println(err)
-	// 		return
-	// 	}
-	// 	meta, err := utils.BuildFileMeta(URL)
-	// 	if err != nil {
-	// 		fmt.Println(err)
-	// 		return
-	// 	}
-	// 	err = tcp.SendFile(ip, TCP_PORT, meta, URL)
-	// 	if err != nil {
-	// 		fmt.Println(err)
-	// 		return
-	// 	}
-
-	// } else {
-	// 	go udp.StartBroadcast(DEFAULT_NAME, UDP_PORT)
-	// 	err := tcp.ReceiveFiles(TCP_PORT)
-	// 	if err != nil {
-	// 		fmt.Println("error ", err)
-	// 		return
-	// 	}
-	// }
 }

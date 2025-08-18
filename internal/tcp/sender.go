@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"time"
 
 	"github.com/Adwaith-NP/dropzone/internal/utils"
 )
@@ -38,7 +39,7 @@ func RequestInquiry(ip string, port int, meta any) (net.Conn, error) {
 		return nil, err
 	}
 	//read the response by the receiver
-	fmt.Println("waiting for receiver to accept ...")
+	fmt.Print("\n\nWaiting for receiver to accept ...")
 	response := make([]byte, 8)
 	n, err := conn.Read(response)
 	if err != nil {
@@ -115,7 +116,15 @@ func SendSingleFiles(conn net.Conn, file string, urlForDir string) error {
 	}
 	defer f.Close()
 
-	if _, err := io.Copy(conn, f); err != nil { //send file
+	wd := &utils.DropData{
+		Writer:        conn,
+		LastTime:      time.Now(),
+		TotalFileSize: info.Size(),
+	}
+
+	fmt.Printf("\n\nSending file: %s\n", info.Name())
+
+	if _, err := io.Copy(wd, f); err != nil { //send file
 		return err
 	}
 	return nil

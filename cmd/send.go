@@ -52,7 +52,7 @@ func SenderMode(port int, path string, pathMode string, localIp string) {
 			fmt.Fprintln(os.Stderr, "Error when sending file: ", err)
 			os.Exit(1)
 		} else {
-			fmt.Println("File sended")
+			fmt.Print("\n\nFile sent successfully")
 		}
 
 	case utils.DirectoryType: //Logic then path is a directory

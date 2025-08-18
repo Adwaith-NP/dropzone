@@ -88,7 +88,7 @@ loop:
 			fmt.Scan(&choice)
 			choice = strings.ToLower(choice)
 			if choice == "x" { // exit when user enter x,X
-				return "", nil
+				os.Exit(0)
 			}
 
 			num, err := strconv.Atoi(choice) // convert string to int , to doing this we can use the value to comapre with index

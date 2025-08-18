@@ -3,11 +3,48 @@ package utils
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"path/filepath"
 	"runtime"
 	"strings"
+	"time"
 )
+
+const BARWIDTH = 50
+
+type DropData struct {
+	Writer        io.Writer
+	Current       int64
+	LastTime      time.Time
+	TotalFileSize int64
+	LastBytes     int64
+}
+
+func (wd *DropData) Write(data []byte) (int, error) {
+	n, err := wd.Writer.Write(data)
+	wd.Current += int64(n)
+	if time.Since(wd.LastTime) >= time.Second {
+		percent := float64(wd.Current) / float64(wd.TotalFileSize) * 100
+		filled := int(percent * float64(BARWIDTH) / 100)
+
+		bytesThisSecond := wd.Current - wd.LastBytes
+		speed := float64(bytesThisSecond) / time.Since(wd.LastTime).Seconds()
+
+		var speedStr string
+		if speed > 1024*1024 {
+			speedStr = fmt.Sprintf("%.2f MB/s", speed/(1024*1024))
+		} else {
+			speedStr = fmt.Sprintf("%.2f KB/s", speed/1024)
+		}
+
+		bar := "[" + strings.Repeat("|", filled) + strings.Repeat(" ", BARWIDTH-filled) + "]"
+		fmt.Printf("\r%s %.0f%% (%s)", bar, percent, speedStr)
+		wd.LastTime = time.Now()
+		wd.LastBytes = wd.Current
+	}
+	return n, err
+}
 
 type DirectoryMeta struct {
 	Type          string
