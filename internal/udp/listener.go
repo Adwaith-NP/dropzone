@@ -10,18 +10,10 @@ import (
 	"time"
 )
 
-type receivers struct {
-	receiverMap map[string]int
-}
-
-var store receivers
-
 // Display all broadcast and ask user to select a receiver
 func StartListening(listenPort int) (string, error) {
 	count := 0
-	store = receivers{
-		receiverMap: make(map[string]int),
-	}
+	store := make(map[string]int)
 	stopChan := make(chan struct{}) // chanel to communicate with user input tread function that stop the UDP scanning loop
 	addr := net.UDPAddr{
 		Port: listenPort,
@@ -46,18 +38,19 @@ func StartListening(listenPort int) (string, error) {
 	// Its the loop that look up for UDP signels in every 2 second
 loop:
 	for {
+		select {
+		case <-stopChan: // The signel from the user input will stop the loop
+			break loop
+		default:
+			time.Sleep(100 * time.Millisecond)
+		}
+
 		conn.SetReadDeadline(time.Now().Add(1 * time.Second))
 		n, remoteAddr, err := conn.ReadFromUDP(buf)
 		if err != nil {
 			netErr, ok := err.(net.Error)
 			if ok && netErr.Timeout() {
-				select {
-				case <-stopChan: // The signel from the user input will stop the loop
-					break loop
-				default:
-					continue
-				}
-
+				continue
 			} else {
 				fmt.Printf("Error reading from UDP : %s", err)
 				continue
@@ -72,15 +65,15 @@ loop:
 		// Key IP help to store unique user , meas the UDP signel broadcasted from every 2 second from every receiver , so we use IP to identify and display
 		if len(parts) == 2 {
 			ip := parts[1]
-			if _, exist := store.receiverMap[ip]; !exist {
+			if _, exist := store[ip]; !exist {
 				count++                                                                         // Used to set the index for the IP
 				fmt.Printf("%d -> Received from %s: %s\n", count, remoteAddr.String(), message) // Display index, connection address, username and ip if ip not precent in receiverMap
-				store.receiverMap[ip] = count
+				store[ip] = count
 			}
 		}
 	}
 	// After ending the loop it ask to select a receiver by given index
-	if len(store.receiverMap) != 0 {
+	if len(store) != 0 {
 		fmt.Println("Type x for exit")
 		var choice string
 		for {
@@ -92,8 +85,8 @@ loop:
 			}
 
 			num, err := strconv.Atoi(choice) // convert string to int , to doing this we can use the value to comapre with index
-			if err == nil && num > 0 && num <= len(store.receiverMap) {
-				for ip, index := range store.receiverMap {
+			if err == nil && num > 0 && num <= len(store) {
+				for ip, index := range store {
 					if num == index {
 						return ip, nil
 					}

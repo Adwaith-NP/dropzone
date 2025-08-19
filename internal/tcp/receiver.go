@@ -26,14 +26,19 @@ func printDirTree(prefix string, tree map[string]any) {
 			nextPrefix := prefix + "   "
 			fmt.Println(newLine)
 			printDirTree(nextPrefix, v)
-		default:
-			fmt.Println(prefix + "|--" + key)
+		case float64:
+			if v < 1024*1024 {
+				kb := v / 1024.0
+				fmt.Printf("\n%s|--%s (%.2f KB)", prefix, key, kb)
+			} else {
+				mb := v / (1024.0 * 1024.0)
+				fmt.Printf("\n%s|--%s (%.2f MB)", prefix, key, mb)
+			}
 		}
 	}
 }
 
 func requestInquiry(meta map[string]any) bool {
-	var choice string
 	fmt.Println("File transaction request (Accept or decline):")
 	if meta["Type"] == "directory" {
 		//Get directory info from meta data
@@ -43,20 +48,28 @@ func requestInquiry(meta map[string]any) bool {
 		treeStructure, _ := meta["TreeStructure"].(map[string]any)
 
 		fmt.Printf("\nName: %s\nTotal Size: %.0f Bytes\nFile Count: %.0f\n", name, totalSize, fileCount)
-		fmt.Print("Do you want to display file tree structure (Y - yes/enter - skip) : ")
-		fmt.Scan(&choice)
+		reader := bufio.NewReader(os.Stdin)
+
+		fmt.Print("Do you want to display file tree structure (Y - yes / Enter - skip) : ")
+
+		choice, _ := reader.ReadString('\n')
 		choice = strings.TrimSpace(strings.ToLower(choice))
 
 		if choice == "y" {
-			fmt.Print("\n\n")
+			fmt.Println()
 			printDirTree("", treeStructure)
 		}
-
 	} else {
 		//Get file info from meta data
 		name, _ := meta["Name"].(string)
 		size, _ := meta["Size"].(float64)
-		fmt.Printf("\nName: %s\nSize: %.0f Bytes\n", name, size)
+		if size < 1024*1024 {
+			kb := size / 1024.0
+			fmt.Printf("\nName: %s\nSize: %.2f KB", name, kb)
+		} else {
+			mb := size / (1024.0 * 1024.0)
+			fmt.Printf("\nName: %s\nSize: %.2f MB", name, mb)
+		}
 	}
 
 	reader := bufio.NewReader(os.Stdin)
