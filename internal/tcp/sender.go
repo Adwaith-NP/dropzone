@@ -9,6 +9,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/Adwaith-NP/dropzone/internal/utils"
@@ -127,5 +128,6 @@ func SendSingleFiles(conn net.Conn, file string, urlForDir string) error {
 	if _, err := io.Copy(wd, f); err != nil { //send file
 		return err
 	}
+	fmt.Printf("\r[%s] 100%% (Done)\n", strings.Repeat("|", utils.BARWIDTH))
 	return nil
 }

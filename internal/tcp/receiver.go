@@ -18,21 +18,22 @@ import (
 
 // Print directory tree structure by using metadata
 func printDirTree(prefix string, tree map[string]any) {
-	for key := range tree {
-		value := tree[key]
+	for key, value := range tree {
 		switch v := value.(type) {
 		case map[string]any:
-			newLine := prefix + "|--" + key
-			nextPrefix := prefix + "   "
-			fmt.Println(newLine)
-			printDirTree(nextPrefix, v)
+			// Directory
+			fmt.Printf("%s|-- %s\n", prefix, key)
+			// Add indentation for children
+			printDirTree(prefix+"   ", v)
+
 		case float64:
+			// File with size
 			if v < 1024*1024 {
 				kb := v / 1024.0
-				fmt.Printf("\n%s|--%s (%.2f KB)", prefix, key, kb)
+				fmt.Printf("%s|-- %s (%.2f KB)\n", prefix, key, kb)
 			} else {
 				mb := v / (1024.0 * 1024.0)
-				fmt.Printf("\n%s|--%s (%.2f MB)", prefix, key, mb)
+				fmt.Printf("%s|-- %s (%.2f MB)\n", prefix, key, mb)
 			}
 		}
 	}
@@ -47,7 +48,14 @@ func requestInquiry(meta map[string]any) bool {
 		fileCount, _ := meta["FileCount"].(float64)
 		treeStructure, _ := meta["TreeStructure"].(map[string]any)
 
-		fmt.Printf("\nName: %s\nTotal Size: %.0f Bytes\nFile Count: %.0f\n", name, totalSize, fileCount)
+		if totalSize < 1024*1024 {
+			kb := totalSize / 1024.0
+			fmt.Printf("\nName: %s\nTotal Size: %.0f KB\nFile Count: %.0f\n", name, kb, fileCount)
+		} else {
+			mb := totalSize / (1024.0 * 1024.0)
+			fmt.Printf("\nName: %s\nTotal Size: %.0f MB\nFile Count: %.0f\n", name, mb, fileCount)
+		}
+
 		reader := bufio.NewReader(os.Stdin)
 
 		fmt.Print("Do you want to display file tree structure (Y - yes / Enter - skip) : ")
@@ -125,9 +133,8 @@ func downloadAllFile(conn net.Conn, baseDir string) error {
 			f.Close()
 			return err
 		}
-
 		f.Close()
-
+		fmt.Printf("\r[%s] 100%% (Done)\n", strings.Repeat("|", utils.BARWIDTH))
 	}
 	fmt.Print("\n\nDownload complete")
 	return nil

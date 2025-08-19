@@ -12,6 +12,7 @@ import (
 )
 
 const BARWIDTH = 50
+const interval = 100 * time.Millisecond
 
 type DropData struct {
 	Writer        io.Writer
@@ -24,7 +25,7 @@ type DropData struct {
 func (wd *DropData) Write(data []byte) (int, error) {
 	n, err := wd.Writer.Write(data)
 	wd.Current += int64(n)
-	if time.Since(wd.LastTime) >= time.Second {
+	if time.Since(wd.LastTime) >= interval {
 		percent := float64(wd.Current) / float64(wd.TotalFileSize) * 100
 		filled := int(percent * float64(BARWIDTH) / 100)
 
