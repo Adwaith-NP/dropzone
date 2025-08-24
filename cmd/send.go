@@ -15,14 +15,20 @@ import (
 func SenderMode(port int, path string, pathMode string, localIp string) {
 	// Display ascii art of dropzone , local ip , and given path
 	fmt.Print(utils.AsciiArt, "\n\n")
-	fmt.Println("Your IP : ", localIp)
-	fmt.Println("Path    : ", path)
-
+	fmt.Println("═════════════════════════════════════════════════════════════")
+	fmt.Printf("Your IP Address : \033[32m%s\033[0m\n", localIp)
+	fmt.Println("Path            :", path)
+	fmt.Printf("Listening on    : \033[36m%d\033[0m\n", port)
+	fmt.Println("═════════════════════════════════════════════════════════════")
 	// Start searching for receivers
 	receiverIp, err := udp.StartListening(port)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "Error: ", err)
 		os.Exit(1)
+	}
+
+	if receiverIp == "" {
+		os.Exit(0)
 	}
 
 	switch pathMode {

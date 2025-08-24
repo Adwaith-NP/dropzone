@@ -40,7 +40,7 @@ func RequestInquiry(ip string, port int, meta any) (net.Conn, error) {
 		return nil, err
 	}
 	//read the response by the receiver
-	fmt.Print("\n\nWaiting for receiver to accept ...")
+	fmt.Print("\n\nWaiting for the receiver to accept the request...")
 	response := make([]byte, 8)
 	n, err := conn.Read(response)
 	if err != nil {
@@ -128,6 +128,6 @@ func SendSingleFiles(conn net.Conn, file string, urlForDir string) error {
 	if _, err := io.Copy(wd, f); err != nil { //send file
 		return err
 	}
-	fmt.Printf("\r[%s] 100%% (Done)\n", strings.Repeat("|", utils.BARWIDTH))
+	fmt.Printf("\r[%s] 100%% (Done)\n", strings.Repeat("\033[32m|\033[0m", utils.BARWIDTH))
 	return nil
 }

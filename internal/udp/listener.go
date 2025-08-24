@@ -25,7 +25,8 @@ func StartListening(listenPort int) (string, error) {
 	}
 	defer conn.Close()
 
-	fmt.Printf("\nListening for receivers on UDP port %d \nHit enter to stop listening\n\n", listenPort)
+	fmt.Print("\n\n\033[36mReceivers Found\033[0m (Press \033[33mENTER\033[0m to stop listening...)\n")
+	fmt.Println("═════════════════════════════════════════════════════════════")
 	buf := make([]byte, 1024)
 	//Look for user input that use to stop scanning
 	go func() {
@@ -46,7 +47,7 @@ loop:
 		}
 
 		conn.SetReadDeadline(time.Now().Add(1 * time.Second))
-		n, remoteAddr, err := conn.ReadFromUDP(buf)
+		n, _, err := conn.ReadFromUDP(buf)
 		if err != nil {
 			netErr, ok := err.(net.Error)
 			if ok && netErr.Timeout() {
@@ -56,28 +57,26 @@ loop:
 				continue
 			}
 		}
-
 		message := string(buf[:n])
 		parts := strings.Split(message, "|")
-
 		// If the parts len is 2 then the ip has collected and use it as a key to store in receiverMap by the value of count map[string]int {"192.32.54.12":1}
 		// count represent the index of the use , so the user can select by given index
 		// Key IP help to store unique user , meas the UDP signel broadcasted from every 2 second from every receiver , so we use IP to identify and display
 		if len(parts) == 2 {
 			ip := parts[1]
 			if _, exist := store[ip]; !exist {
-				count++                                                                         // Used to set the index for the IP
-				fmt.Printf("%d -> Received from %s: %s\n", count, remoteAddr.String(), message) // Display index, connection address, username and ip if ip not precent in receiverMap
+				count++                                                                   // Used to set the index for the IP
+				fmt.Printf("\n[%d] %s |  \033[32m%s\033[0m\n", count, parts[0], parts[1]) // Display index, username and ip if ip not precent in receiverMap
 				store[ip] = count
 			}
 		}
 	}
 	// After ending the loop it ask to select a receiver by given index
 	if len(store) != 0 {
-		fmt.Println("Type x for exit")
+		fmt.Println("═════════════════════════════════════════════════════════════")
 		var choice string
 		for {
-			fmt.Print("\nChoose receiver number : ")
+			fmt.Print("\nEnter the receiver number (\033[33mX\033[0m to exit): ")
 			fmt.Scan(&choice)
 			choice = strings.ToLower(choice)
 			if choice == "x" { // exit when user enter x,X
@@ -96,6 +95,5 @@ loop:
 			}
 		}
 	}
-
 	return "", nil
 }

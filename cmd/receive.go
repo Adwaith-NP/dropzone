@@ -12,10 +12,12 @@ import (
 func ReceiverMode(port int, dropName string, dowloadDir string, ip string) {
 	//Display details
 	fmt.Print(utils.AsciiArt, "\n\n")
-	fmt.Println("DropName           : ", dropName)
-	fmt.Println("Your IPV4          : ", ip)
-	fmt.Println("Used PORT          : ", port)
-	fmt.Println("Download directory : ", dowloadDir)
+	fmt.Println("═════════════════════════════════════════════════════════════")
+	fmt.Println("DropName           :", dropName)
+	fmt.Printf("Your IP Address    : \033[32m%s\033[0m\n", ip)
+	fmt.Printf("Listening on       : \033[36m%d\033[0m\n", port)
+	fmt.Println("Download directory :", dowloadDir)
+	fmt.Println("═════════════════════════════════════════════════════════════")
 
 	//Using channel to stop and start broadcast
 	startStopSignel := make(chan bool)

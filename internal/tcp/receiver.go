@@ -18,11 +18,12 @@ import (
 
 // Print directory tree structure by using metadata
 func printDirTree(prefix string, tree map[string]any) {
+	joint := "\033[32m|--\033[0m"
 	for key, value := range tree {
 		switch v := value.(type) {
 		case map[string]any:
 			// Directory
-			fmt.Printf("%s|-- %s\n", prefix, key)
+			fmt.Printf("%s%s %s\n", prefix, joint, key)
 			// Add indentation for children
 			printDirTree(prefix+"   ", v)
 
@@ -30,10 +31,10 @@ func printDirTree(prefix string, tree map[string]any) {
 			// File with size
 			if v < 1024*1024 {
 				kb := v / 1024.0
-				fmt.Printf("%s|-- %s (%.2f KB)\n", prefix, key, kb)
+				fmt.Printf("%s%s %s (%.2f KB)\n", prefix, joint, key, kb)
 			} else {
 				mb := v / (1024.0 * 1024.0)
-				fmt.Printf("%s|-- %s (%.2f MB)\n", prefix, key, mb)
+				fmt.Printf("%s%s %s (%.2f MB)\n", prefix, joint, key, mb)
 			}
 		}
 	}
@@ -58,7 +59,7 @@ func requestInquiry(meta map[string]any) bool {
 
 		reader := bufio.NewReader(os.Stdin)
 
-		fmt.Print("Do you want to display file tree structure (Y - yes / Enter - skip) : ")
+		fmt.Print("Display file tree structure? (\033[32mY\033[0m = Yes, \033[33mENTER\033[0m = Skip): ")
 
 		choice, _ := reader.ReadString('\n')
 		choice = strings.TrimSpace(strings.ToLower(choice))
@@ -81,7 +82,7 @@ func requestInquiry(meta map[string]any) bool {
 	}
 
 	reader := bufio.NewReader(os.Stdin)
-	fmt.Print("\n\n* Start download (y/enter) : ")
+	fmt.Print("\nStart download? (\033[32mY\033[0m = Yes, \033[33mENTER\033[0m = Skip): ")
 	input, _ := reader.ReadString('\n') // read until Enter
 	input = strings.TrimSpace(strings.ToLower(input))
 	return input == "y"
@@ -127,6 +128,8 @@ func downloadAllFile(conn net.Conn, baseDir string) error {
 			Writer:        f,
 			LastTime:      time.Now(),
 			TotalFileSize: size,
+			Speed:         "0",
+			LastTimeSpeed: time.Now(),
 		}
 
 		if _, err := io.CopyN(wd, conn, size); err != nil {
@@ -134,7 +137,7 @@ func downloadAllFile(conn net.Conn, baseDir string) error {
 			return err
 		}
 		f.Close()
-		fmt.Printf("\r[%s] 100%% (Done)\n", strings.Repeat("|", utils.BARWIDTH))
+		fmt.Printf("\r[%s] 100%% (Done)\n", strings.Repeat("\033[32m|\033[0m", utils.BARWIDTH))
 	}
 	fmt.Print("\n\nDownload complete")
 	return nil

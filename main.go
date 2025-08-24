@@ -4,14 +4,15 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/Adwaith-NP/dropzone/cmd"
 	"github.com/Adwaith-NP/dropzone/internal/utils"
 )
 
-const DEFAULT_PORT = 8080
-const DEFAULT_NAME = "DropZone"
-const URL = "/Users/adwaith/Documents/dropzone/cmd/receive.go"
+const DEFAULT_PORT int = 8080
+const DEFAULT_NAME string = "DropZone"
+const URL string = "/Users/adwaith/Documents/dropzone/cmd/receive.go"
 
 func main() {
 	// Get local ip and cheak is there any error
@@ -48,6 +49,17 @@ func main() {
 		os.Exit(1)
 	}
 
+	//validate user defined dropZone name
+	if *dropName != DEFAULT_NAME {
+		if len(*dropName) >= 15 {
+			fmt.Fprintln(os.Stderr, "Error: Drop name can contain at most 15 letters")
+			os.Exit(1)
+		}
+		if strings.Contains(*dropName, "|") {
+			fmt.Fprintln(os.Stderr, "Error: Drop name cannot contain \"|\"")
+			os.Exit(1)
+		}
+	}
 	//Validate the given use given ip is valid
 	if *ip != localIp && !utils.IsValidIPv4(*ip) {
 		fmt.Fprintln(os.Stderr, "Error : Invalid IPV4: ", *ip)

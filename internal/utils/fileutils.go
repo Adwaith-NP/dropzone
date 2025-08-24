@@ -12,7 +12,8 @@ import (
 )
 
 const BARWIDTH = 50
-const interval = 100 * time.Millisecond
+const DisplayInterval = 100 * time.Millisecond
+const SpeedCalInterval = time.Second
 
 type DropData struct {
 	Writer        io.Writer
@@ -20,27 +21,31 @@ type DropData struct {
 	LastTime      time.Time
 	TotalFileSize int64
 	LastBytes     int64
+	Speed         string
+	LastTimeSpeed time.Time
 }
 
 func (wd *DropData) Write(data []byte) (int, error) {
 	n, err := wd.Writer.Write(data)
 	wd.Current += int64(n)
-	if time.Since(wd.LastTime) >= interval {
+	if time.Since(wd.LastTime) >= DisplayInterval {
 		percent := float64(wd.Current) / float64(wd.TotalFileSize) * 100
 		filled := int(percent * float64(BARWIDTH) / 100)
 
 		bytesThisSecond := wd.Current - wd.LastBytes
 		speed := float64(bytesThisSecond) / time.Since(wd.LastTime).Seconds()
 
-		var speedStr string
-		if speed > 1024*1024 {
-			speedStr = fmt.Sprintf("%.2f MB/s", speed/(1024*1024))
-		} else {
-			speedStr = fmt.Sprintf("%.2f KB/s", speed/1024)
+		if time.Since(wd.LastTimeSpeed) >= SpeedCalInterval {
+			if speed > 1024*1024 {
+				wd.Speed = fmt.Sprintf("%.2f MB/s", speed/(1024*1024))
+			} else {
+				wd.Speed = fmt.Sprintf("%.2f KB/s", speed/1024)
+			}
+			wd.LastTimeSpeed = time.Now()
 		}
 
-		bar := "[" + strings.Repeat("|", filled) + strings.Repeat(" ", BARWIDTH-filled) + "]"
-		fmt.Printf("\r%s %.0f%% (%s)", bar, percent, speedStr)
+		bar := "[" + strings.Repeat("\033[32m|\033[0m", filled) + strings.Repeat(" ", BARWIDTH-filled) + "]"
+		fmt.Printf("\r%s %.0f%% (%s)", bar, percent, wd.Speed)
 		wd.LastTime = time.Now()
 		wd.LastBytes = wd.Current
 	}
