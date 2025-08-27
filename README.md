@@ -92,5 +92,35 @@ dropzone -r -dd ./directory
 ## Project Info
 - **Project**: DropZone - File Sharing Software
 - **Transport**: 
-  - UDP → Share IP and Drop Name (discovery)
-  - TCP → Share files (transfer)
+  - **UDP** → Used for sharing IP and DropZone name (discovery).
+  - **TCP** → Used for file transfers.
+
+## How DropZone Works
+
+### 1. Network Setup
+- Both the **sender** and the **receiver** must be connected to the same network (LAN/Wi-Fi).
+
+### 2. Receiver Broadcast
+- The **receiver** broadcasts its DropZone name and IP address over the network.
+
+### 3. Sender Discovery
+- The **sender** listens for these broadcasts.  
+- A list of available receivers is displayed to the sender.
+
+### 4. Receiver Selection
+- The **sender selects** a receiver from the list.
+
+### 5. Metadata Sharing
+- The sender sends **file metadata** (file name, size, or directory structure) to the receiver.  
+- The sender waits for the receiver to respond.
+
+### 6. Receiver Review
+- The **receiver** receives the metadata.  
+- Details are displayed:
+  - If it’s a **file**: the receiver can view the file name and size (or skip).  
+  - If it’s a **directory**: the receiver can view the full directory tree with file sizes (or skip).  
+
+### 7. Acceptance Decision
+- The receiver is asked to **accept** or **reject** the transfer.  
+- If **rejected** → the process ends.  
+- If **accepted** → the download begins.  
