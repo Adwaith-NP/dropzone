@@ -71,7 +71,7 @@ dropzone -r -p 9090
 
 6. Use a custom name:
 ```bash
-dropzone -r -f ./file.txt -n MyDropZone
+dropzone -r -n MyDropZone
 ```
 
 7. Use a custom ip:
