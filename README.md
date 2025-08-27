@@ -63,20 +63,29 @@ dropzone -s -d ./myfolder
 dropzone -s -fl ./myfolder,./myfolder2,./myfolder3
 ```
 
-4. Use a custom port:
+5. Use a custom port:
 ```bash
 dropzone -s -f ./file.txt -p 9090 
+dropzone -r -p 9090 
 ```
 
-5. Use a custom name:
+6. Use a custom name:
 ```bash
-dropzone -s -f ./file.txt -n MyDropZone
+dropzone -r -f ./file.txt -n MyDropZone
 ```
 
-5. Use a custom ip:
+7. Use a custom ip:
 ```bash
 dropzone -s -f ./file.txt -ip 198.162.87.12
+dropzone -r -ip 198.162.87.12
 ```
+
+8. Use a custom download directory:
+```bash
+dropzone -r -dd ./directory
+```
+
+
 
 ---
 
