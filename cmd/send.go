@@ -39,8 +39,12 @@ func SenderMode(port int, path string, pathMode string, localIp string) {
 			fmt.Fprintln(os.Stderr, "Error getting absolute path: ", err)
 			os.Exit(1)
 		}
-		if utils.IsDirectory(absPath) { //Check the given path exist
-			fmt.Fprintln(os.Stderr, "File path not found")
+		if !utils.PathExists(absPath) {
+			fmt.Fprintln(os.Stderr, "Error: File path not found")
+			os.Exit(1)
+		}
+		if utils.IsDirectory(absPath) { //Check the given path is a file not a directory
+			fmt.Fprintln(os.Stderr, "Error: The specified path is not a file")
 			os.Exit(1)
 		}
 		fileMeta, err := utils.BuildFileMeta(absPath) //Get the meta data of the file
@@ -68,8 +72,12 @@ func SenderMode(port int, path string, pathMode string, localIp string) {
 			fmt.Fprintln(os.Stderr, "Error getting absolute path: ", err)
 			os.Exit(1)
 		}
-		if !utils.IsDirectory(absPath) { //Chack is dir exist
-			fmt.Fprintln(os.Stderr, "Directory path not found")
+		if !utils.PathExists(absPath) {
+			fmt.Fprintln(os.Stderr, "Error: The specified directory does not exist.")
+			os.Exit(1)
+		}
+		if !utils.IsDirectory(absPath) { //Chack is it a directory
+			fmt.Fprintln(os.Stderr, "Error: The specified path is not a directory")
 			os.Exit(1)
 		}
 		dirMeta, err := utils.BuildDirectoryMeta(absPath) //create meta data of dir
@@ -104,8 +112,12 @@ func SenderMode(port int, path string, pathMode string, localIp string) {
 				fmt.Fprintln(os.Stderr, "Error getting absolute path: ", err)
 				os.Exit(1)
 			}
+			if !utils.PathExists(absPath) {
+				fmt.Fprintln(os.Stderr, "Error: The specified directory does not exist: ", files[i])
+				os.Exit(1)
+			}
 			if utils.IsDirectory(absPath) { //Chack is dir exist
-				fmt.Fprintln(os.Stderr, "File path not found: ", files[i])
+				fmt.Fprintln(os.Stderr, "Error: The specified path is not a file: ", files[i])
 				os.Exit(1)
 			}
 			info, err := os.Stat(absPath)

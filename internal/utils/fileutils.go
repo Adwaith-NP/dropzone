@@ -75,6 +75,20 @@ func IsDirectory(path string) bool {
 	return info.IsDir()
 }
 
+func PathExists(path string) bool {
+	_, err := os.Stat(path)
+	if err == nil {
+		// Path exists
+		return true
+	}
+	if os.IsNotExist(err) {
+		// Path does not exist
+		return false
+	}
+	// Some other error (e.g. permission denied)
+	return false
+}
+
 // Return the file same as string
 func GetAllFiles(dir string) ([]string, error) {
 	var files []string
