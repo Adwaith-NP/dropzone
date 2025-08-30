@@ -124,3 +124,7 @@ dropzone -r -dd ./directory
 - The receiver is asked to **accept** or **reject** the transfer.  
 - If **rejected** → the process ends.  
 - If **accepted** → the download begins.  
+
+## 📜 License
+
+This project is licensed under the **MIT License** – feel free to use, modify, and distribute.
