@@ -1,7 +1,5 @@
 # DropZone - File Sharing Software
-
-<img width="697" height="483" alt="Screenshot 2025-08-30 at 4 56 54 PM" src="https://github.com/user-attachments/assets/bac07181-b25a-4d48-a349-cba6e52f4ebc" />
-
+<img width="697" height="413" alt="Screenshot 2025-08-30 at 4 58 56 PM" src="https://github.com/user-attachments/assets/9f01573a-141b-4525-bb26-79c6dd93ad25" />
 
 DropZone is a cross-platform file sharing software that works on **Linux**, **Windows**, and **Mac**.  
 It uses **UDP** for discovering receivers (sharing IP and Drop Name) and **TCP** for transferring files.
