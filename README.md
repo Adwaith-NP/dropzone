@@ -12,6 +12,44 @@ You can download the latest compiled versions from the
 - Mac: `dropzone-mac`
 - Windows: `dropzone.exe`
 
+## 🚀 Installation
+
+### Linux (64-bit)
+```bash
+curl -L https://github.com/adwaith-np/dropzone/releases/download/v1.0.0/dropzone-linux-amd64 -o dropzone-linux-amd64
+chmod +x dropzone-linux-amd64
+sudo mv dropzone-linux-amd64 /usr/local/bin/dropzone
+```
+
+### Linux (32-bit)
+```bash
+curl -L https://github.com/adwaith-np/dropzone/releases/download/v1.0.0/dropzone-linux-386 -o dropzone-linux-386
+chmod +x dropzone-linux-386
+sudo mv dropzone-linux-386 /usr/local/bin/dropzone
+```
+
+### macOS (Intel, 64-bit)
+```bash
+curl -L https://github.com/adwaith-np/dropzone/releases/download/v1.0.0/dropzone-mac-amd64 -o dropzone-mac-amd64
+chmod +x dropzone-mac-amd64
+sudo mv dropzone-mac-amd64 /usr/local/bin/dropzone
+```
+
+### macOS (Apple Silicon M1/M2/M3)
+```bash
+curl -L https://github.com/adwaith-np/dropzone/releases/download/v1.0.0/dropzone-mac-arm64 -o dropzone-mac-arm64
+chmod +x dropzone-mac-arm64
+sudo mv dropzone-mac-arm64 /usr/local/bin/dropzone
+```
+
+### Windows
+Download the .exe file from the Releases page,
+then run it directly from PowerShell or Command Prompt:
+```bash
+.\dropzone-windows-amd64.exe
+```
+If you want it globally available, rename dropzone-windows-amd64.exe to dropzone.exe and
+add the folder containing dropzone.exe to your PATH environment variable.
 
 ---
 
