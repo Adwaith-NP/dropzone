@@ -18,28 +18,44 @@ You can download the latest compiled versions from the
 ### Linux (64-bit)
 ```bash
 curl -L https://github.com/adwaith-np/dropzone/releases/download/v1.0.0/dropzone-linux-amd64 -o dropzone-linux-amd64
+```
+```bash
 chmod +x dropzone-linux-amd64
+```
+```bash
 sudo mv dropzone-linux-amd64 /usr/local/bin/dropzone
 ```
 
 ### Linux (32-bit)
 ```bash
 curl -L https://github.com/adwaith-np/dropzone/releases/download/v1.0.0/dropzone-linux-386 -o dropzone-linux-386
+```
+```bash
 chmod +x dropzone-linux-386
+```
+```bash
 sudo mv dropzone-linux-386 /usr/local/bin/dropzone
 ```
 
 ### macOS (Intel, 64-bit)
 ```bash
 curl -L https://github.com/adwaith-np/dropzone/releases/download/v1.0.0/dropzone-mac-amd64 -o dropzone-mac-amd64
+```
+```bash
 chmod +x dropzone-mac-amd64
+```
+```bash
 sudo mv dropzone-mac-amd64 /usr/local/bin/dropzone
 ```
 
 ### macOS (Apple Silicon M1/M2/M3)
 ```bash
 curl -L https://github.com/adwaith-np/dropzone/releases/download/v1.0.0/dropzone-mac-arm64 -o dropzone-mac-arm64
+```
+```bash
 chmod +x dropzone-mac-arm64
+```
+```bash
 sudo mv dropzone-mac-arm64 /usr/local/bin/dropzone
 ```
 
