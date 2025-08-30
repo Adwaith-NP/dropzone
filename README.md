@@ -1,5 +1,6 @@
 # DropZone - File Sharing Software
-<img width="469" height="262" alt="Screenshot 2025-08-30 at 4 47 49 PM" src="https://github.com/user-attachments/assets/bcf802a2-3ddf-4dd9-97c4-b710670eb447" />
+
+<img width="697" height="483" alt="Screenshot 2025-08-30 at 4 56 54 PM" src="https://github.com/user-attachments/assets/bac07181-b25a-4d48-a349-cba6e52f4ebc" />
 
 
 DropZone is a cross-platform file sharing software that works on **Linux**, **Windows**, and **Mac**.  
