@@ -20,10 +20,10 @@ You can download the latest compiled versions from the
 curl -L https://github.com/adwaith-np/dropzone/releases/download/v1.0.0/dropzone-linux-amd64 -o dropzone-linux-amd64
 ```
 ```bash
-chmod +x dropzone-linux-amd64
+sudo mv dropzone-linux-amd64 /usr/local/bin/dropzone
 ```
 ```bash
-sudo mv dropzone-linux-amd64 /usr/local/bin/dropzone
+chmod +x /usr/local/bin/dropzone
 ```
 
 ### Linux (32-bit)
@@ -31,10 +31,10 @@ sudo mv dropzone-linux-amd64 /usr/local/bin/dropzone
 curl -L https://github.com/adwaith-np/dropzone/releases/download/v1.0.0/dropzone-linux-386 -o dropzone-linux-386
 ```
 ```bash
-chmod +x dropzone-linux-386
+sudo mv dropzone-linux-386 /usr/local/bin/dropzone
 ```
 ```bash
-sudo mv dropzone-linux-386 /usr/local/bin/dropzone
+chmod +x /usr/local/bin/dropzone
 ```
 
 ### macOS (Intel, 64-bit)
@@ -42,10 +42,10 @@ sudo mv dropzone-linux-386 /usr/local/bin/dropzone
 curl -L https://github.com/adwaith-np/dropzone/releases/download/v1.0.0/dropzone-mac-amd64 -o dropzone-mac-amd64
 ```
 ```bash
-chmod +x dropzone-mac-amd64
+sudo mv dropzone-mac-amd64 /usr/local/bin/dropzone
 ```
 ```bash
-sudo mv dropzone-mac-amd64 /usr/local/bin/dropzone
+chmod +x /usr/local/bin/dropzone
 ```
 
 ### macOS (Apple Silicon M1/M2/M3)
@@ -53,10 +53,10 @@ sudo mv dropzone-mac-amd64 /usr/local/bin/dropzone
 curl -L https://github.com/adwaith-np/dropzone/releases/download/v1.0.0/dropzone-mac-arm64 -o dropzone-mac-arm64
 ```
 ```bash
-chmod +x dropzone-mac-arm64
+sudo mv dropzone-mac-arm64 /usr/local/bin/dropzone
 ```
 ```bash
-sudo mv dropzone-mac-arm64 /usr/local/bin/dropzone
+chmod +x /usr/local/bin/dropzone
 ```
 
 ### Windows
